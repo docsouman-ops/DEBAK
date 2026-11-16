@@ -1,0 +1,72 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Manrope", system-ui, -apple-system, sans-serif;
+  --font-cinzel: "Cinzel", Georgia, serif;
+  --font-signature: "Alex Brush", cursive, sans-serif;
+  
+  /* Debaks Brand Palette */
+  --color-brand-bg: #080A0C;
+  --color-brand-surface: #101214;
+  --color-brand-card: #0D0F12;
+  --color-brand-gold: #C99A4B;
+  --color-brand-gold-light: #E8BD72;
+  --color-brand-text: #F3F1EC;
+  --color-brand-muted: #A4A4A4;
+  --color-brand-border: rgba(255, 255, 255, 0.09);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #080A0C;
+  color: #F3F1EC;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Custom typography & metallic gold utilities */
+.font-cinzel {
+  font-family: var(--font-cinzel), Georgia, serif;
+}
+
+.font-signature {
+  font-family: var(--font-signature), cursive;
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #F9E7BA 0%, #E8BD72 35%, #C99A4B 75%, #A77A2E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #F3D99A 0%, #E8BD72 40%, #C99A4B 80%, #9F7425 100%);
+}
+
+.border-subtle {
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.border-gold-subtle {
+  border-color: rgba(201, 154, 75, 0.35);
+}
+
+/* Subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080A0C;
+}
+::-webkit-scrollbar-thumb {
+  background: #1C2026;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C99A4B;
+}
