@@ -11,6 +11,7 @@ import {
   BarChart3,
   Settings,
   Users,
+  Film,
   CheckCircle2,
   ChevronRight
 } from 'lucide-react';
@@ -48,6 +49,8 @@ export const Capabilities: React.FC<CapabilitiesProps> = ({ onOpenContact }) => 
         return <Settings className={iconClass} />;
       case 'Users':
         return <Users className={iconClass} />;
+      case 'Film':
+        return <Film className={iconClass} />;
       default:
         return <Target className={iconClass} />;
     }
@@ -145,10 +148,6 @@ export const Capabilities: React.FC<CapabilitiesProps> = ({ onOpenContact }) => 
           <div className="mt-8 p-6 rounded-lg bg-[#0e1217] border border-[#c5a059]/40 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 animate-in slide-in-from-bottom-2 duration-300">
             <div className="space-y-1 max-w-2xl">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold tracking-widest text-[#dfbe70] uppercase">
-                  ACTIVE FOCUS
-                </span>
-                <span className="text-neutral-500">·</span>
                 <span className="text-sm font-semibold text-white">
                   {selectedCapability.title}
                 </span>

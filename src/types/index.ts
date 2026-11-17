@@ -20,6 +20,7 @@ export interface ProjectItem {
   title: string;
   category: string;
   image: string;
+  video?: string;
   client: string;
   year: string;
   description: string;

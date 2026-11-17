@@ -129,7 +129,7 @@ export const CAPABILITIES: CapabilityItem[] = [
     title: 'Digital Solutions',
     iconName: 'Monitor',
     description: 'End-to-end full stack web platforms, mobile responsive applications, and cloud architecture.',
-    deliverables: ['React & Node Apps', 'Custom APIs', 'Performance Optimization', 'Enterprise Portals']
+    deliverables: ['Website', 'Web App', 'Performance Optimization', 'Enterprise Portals']
   },
   {
     id: 'immersive',
@@ -143,7 +143,7 @@ export const CAPABILITIES: CapabilityItem[] = [
     title: 'Exhibitions & Events',
     iconName: 'Landmark',
     description: 'Turnkey exhibition stands, museum showcases, keynote stages, and experiential brand pavilions.',
-    deliverables: ['Booth Architecture', 'Fabrication Drawings', 'LED Stage Design', 'On-Site Supervision']
+    deliverables: ['Booth Architecture', 'Fabrication', 'LED Stage Design', 'On-Site Supervision']
   },
   {
     id: 'marketing',
@@ -153,11 +153,11 @@ export const CAPABILITIES: CapabilityItem[] = [
     deliverables: ['Omni-channel Campaigns', 'Social Engagement', 'Conversion Rate Optimization', 'Audience Segmentation']
   },
   {
-    id: 'automation',
-    title: 'Automation',
-    iconName: 'Settings',
-    description: 'Streamlining cross-platform operations, marketing automation, and automated data workflows.',
-    deliverables: ['Workflow Automation', 'CRM Integration', 'Automated Reporting', 'Webhook Pipelines']
+    id: 'motion-video',
+    title: 'Motion Graphics & Video Editing',
+    iconName: 'Film',
+    description: 'Dynamic motion design, broadcast-grade video editing, title sequences, and visual storytelling.',
+    deliverables: ['2D / 3D Motion Design', 'Commercial Video Editing', 'Color Grading & Finishing', 'Kinetic Typography']
   },
   {
     id: 'project-mgmt',
@@ -236,6 +236,119 @@ export const PROJECTS: ProjectItem[] = [
   }
 ];
 
+export const FEATURED_VIDEOS: ProjectItem[] = [
+  {
+    id: 'video-arch-walkthrough',
+    title: 'Architectural Walkthrough',
+    category: '3D / Architecture',
+    image: IMAGES.architectureModern,
+    video: '/assets/aistudio/Cove_0afa6276.mp4',
+    client: '',
+    year: '2026',
+    description: '',
+    challenge: '',
+    solution: '',
+    impact: '',
+    tags: []
+  },
+  {
+    id: 'video-3d-turntable',
+    title: '3D Industrial Asset Turntable',
+    category: '3D / Product',
+    image: IMAGES.showcaseAutomotive,
+    video: '/assets/aistudio/WhatsApp_Video_2026-05-27_at_7.17.23_PM_80317184.mp4',
+    client: '',
+    year: '2026',
+    description: '',
+    challenge: '',
+    solution: '',
+    impact: '',
+    tags: []
+  },
+  {
+    id: 'video-event-reel',
+    title: 'Event Motion & Highlight Reel',
+    category: 'Experience / Event',
+    image: IMAGES.eventConcertStage,
+    video: '/assets/aistudio/WhatsApp_Video_2026-06-16_at_11.48.20_PM_bd5ab54c.mp4',
+    client: '',
+    year: '2026',
+    description: '',
+    challenge: '',
+    solution: '',
+    impact: '',
+    tags: []
+  }
+];
+
+export const EXTRA_GALLERY_IMAGES: ProjectItem[] = [
+  {
+    id: 'extra-arch-aerial',
+    title: 'Architectural Visualization',
+    category: '3D / Architecture',
+    image: '/assets/aistudio/WhatsApp_Image_2026-05-27_at_7.17.59_PM__1__1d677677.jpeg',
+    client: '',
+    year: '2026',
+    description: '',
+    challenge: '',
+    solution: '',
+    impact: '',
+    tags: []
+  },
+  {
+    id: 'extra-arch-exterior',
+    title: 'Architectural Visualization',
+    category: '3D / Architecture',
+    image: '/assets/aistudio/WhatsApp_Image_2026-05-27_at_7.17.55_PM_ec64afb0.jpeg',
+    client: '',
+    year: '2026',
+    description: '',
+    challenge: '',
+    solution: '',
+    impact: '',
+    tags: []
+  },
+  {
+    id: 'extra-arch-rooftop',
+    title: 'Architectural Visualization',
+    category: '3D / Architecture',
+    image: '/assets/aistudio/WhatsApp_Image_2026-05-27_at_7.18.00_PM_d7f785a3.jpeg',
+    client: '',
+    year: '2026',
+    description: '',
+    challenge: '',
+    solution: '',
+    impact: '',
+    tags: []
+  },
+  {
+    id: 'extra-arch-siteplan',
+    title: 'Architectural Visualization',
+    category: '3D / Architecture',
+    image: '/assets/aistudio/WhatsApp_Image_2026-05-27_at_7.17.54_PM_082e8e39.jpeg',
+    client: '',
+    year: '2026',
+    description: '',
+    challenge: '',
+    solution: '',
+    impact: '',
+    tags: []
+  },
+  {
+    id: 'extra-arch-cafe',
+    title: 'Architectural Visualization',
+    category: '3D / Interior',
+    image: '/assets/aistudio/cafe_3cc_b2e1c296.png',
+    client: '',
+    year: '2026',
+    description: '',
+    challenge: '',
+    solution: '',
+    impact: '',
+    tags: []
+  }
+];
+
 export const PHILOSOPHY_PILLARS = [
   {
     title: 'CREATIVE THINKER',
@@ -265,7 +378,7 @@ export const PHILOSOPHY_PILLARS = [
 ];
 
 export const CONTACT_INFO = {
-  name: 'Debaks Su',
+  name: 'DEBAKS',
   title: 'Creative & Technology Consultant',
   email: 'debthestar@gmail.com',
   phone: '+91 9830444188',
@@ -401,7 +514,7 @@ export const BLOG_POSTS: BlogPostItem[] = [
     category: 'AI Workflows',
     date: 'October 2026',
     readTime: '6 min read',
-    author: 'Debaks Su',
+    author: 'DEBAKS',
     image: IMAGES.blogSpatialAi,
     excerpt: 'Why deterministic 3D geometry paired with node-based AI look-development outperforms pure prompt generation for commercial brand assets.',
     content: [
@@ -421,7 +534,7 @@ export const BLOG_POSTS: BlogPostItem[] = [
     category: 'Experiential',
     date: 'September 2026',
     readTime: '5 min read',
-    author: 'Debaks Su',
+    author: 'DEBAKS',
     image: IMAGES.blogExperiential,
     excerpt: 'How sightlines, warm architectural contrast, and acoustic zoning transform crowded expo booths into high-converting brand sanctuaries.',
     content: [
@@ -441,7 +554,7 @@ export const BLOG_POSTS: BlogPostItem[] = [
     category: 'Brand Strategy',
     date: 'August 2026',
     readTime: '4 min read',
-    author: 'Debaks Su',
+    author: 'DEBAKS',
     image: IMAGES.blogBrandCraft,
     excerpt: 'Translating the discipline of foil stamping, typography proportion, and physical material palettes into modern digital interfaces.',
     content: [

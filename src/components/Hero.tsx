@@ -86,7 +86,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onExploreSolutions })
               <div className="h-[1px] w-24 bg-gradient-to-r from-neutral-500 to-transparent" />
             </div>
             <p className="text-[11px] font-semibold tracking-[0.24em] text-[#c5a059] uppercase">
-              CREATIVE &amp; TECHNOLOGY CONSULTANT
+              CREATIVE &amp; TECHNOLOGY CONSULTANCY
             </p>
           </div>
 

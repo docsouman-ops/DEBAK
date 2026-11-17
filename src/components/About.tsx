@@ -55,7 +55,7 @@ export const About: React.FC<AboutProps> = ({ onOpenStory, isStandalonePage = fa
             <div className="relative rounded-lg overflow-hidden border border-white/10 bg-[#0d0f12] shadow-2xl group">
               <img
                 src={IMAGES.debakPortrait}
-                alt="Debaks Su - Creative & Technology Consultant"
+                alt="DEBAKS - Creative & Technology Consultant"
                 loading="lazy"
                 decoding="async"
                 className="w-full h-auto object-cover max-h-[580px] group-hover:scale-102 transition-transform duration-700 ease-out"

@@ -1,12 +1,88 @@
-import React, { useState } from 'react';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import { PROJECTS } from '../data/content.ts';
+import React, { useState, useRef, useEffect } from 'react';
+import { ArrowRight, ArrowUpRight, Play } from 'lucide-react';
+import { PROJECTS, FEATURED_VIDEOS } from '../data/content.ts';
 import { ProjectItem } from '../types/index.ts';
 
 interface FeaturedWorkProps {
   onSelectProject: (project: ProjectItem) => void;
   isStandalonePage?: boolean;
 }
+
+interface LoopVideoProps {
+  src: string;
+  poster?: string;
+  className?: string;
+}
+
+const LoopVideo: React.FC<LoopVideoProps> = ({ src, poster, className }) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+
+    el.defaultMuted = true;
+    el.muted = true;
+    el.setAttribute('muted', '');
+    el.setAttribute('playsinline', '');
+    el.setAttribute('webkit-playsinline', '');
+
+    const attemptPlay = () => {
+      if (!el.muted) el.muted = true;
+      const playPromise = el.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {
+          // Retry once more when media is buffered
+        });
+      }
+    };
+
+    attemptPlay();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            attemptPlay();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [src]);
+
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      poster={poster}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="auto"
+      onLoadedData={(e) => {
+        const el = e.currentTarget;
+        el.muted = true;
+        el.play().catch(() => {});
+      }}
+      onCanPlay={(e) => {
+        const el = e.currentTarget;
+        el.muted = true;
+        if (el.paused) {
+          el.play().catch(() => {});
+        }
+      }}
+      className={className}
+    />
+  );
+};
 
 export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ onSelectProject, isStandalonePage = false }) => {
   const [filter, setFilter] = useState<string>('all');
@@ -18,13 +94,16 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ onSelectProject, isS
     { id: 'digital', label: 'Digital & AI' },
   ];
 
-  const filteredProjects = PROJECTS.filter((p) => {
+  const matchesFilter = (p: ProjectItem) => {
     if (filter === 'all') return true;
     if (filter === '3d') return p.category.includes('3D') || p.category.includes('Product');
     if (filter === 'experience') return p.category.includes('Experience') || p.category.includes('Event');
     if (filter === 'digital') return p.category.includes('Digital') || p.category.includes('AI');
     return true;
-  });
+  };
+
+  const filteredProjects = PROJECTS.filter(matchesFilter);
+  const filteredVideos = FEATURED_VIDEOS.filter(matchesFilter);
 
   return (
     <section 
@@ -100,53 +179,48 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ onSelectProject, isS
                 </div>
               </div>
 
-              {/* Text Info */}
-              <div className="p-4 flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-[#dfbe70] transition-colors leading-snug">
-                    {project.title}
-                  </h3>
-                  
-                  {/* Category exactly as shown in screenshot */}
-                  <p className="text-xs text-neutral-400 mt-1 font-medium">
-                    {project.category}
-                  </p>
-                </div>
-
-                <div className="pt-3 mt-3 border-t border-white/5 flex items-center justify-between text-[11px] text-neutral-400">
-                  <span>{project.client}</span>
-                  <span className="text-[#c5a059] group-hover:translate-x-0.5 transition-transform">
-                    View &rarr;
-                  </span>
-                </div>
+              {/* Project Name */}
+              <div className="p-4 flex items-center justify-between gap-2">
+                <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-[#dfbe70] transition-colors leading-snug">
+                  {project.title}
+                </h3>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Detailed case study preview if on standalone page */}
-        {isStandalonePage && (
-          <div className="mt-16 pt-12 border-t border-white/10 space-y-6">
-            <h3 className="text-xl font-bold text-white">Project Highlights &amp; Metrics</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-6 rounded-lg bg-[#0e1116] border border-white/10">
-                <p className="text-3xl font-extrabold text-[#dfbe70] font-mono">82%</p>
-                <p className="text-xs uppercase tracking-wider text-neutral-300 font-bold mt-1">Residential Pre-Sales</p>
-                <p className="text-xs text-neutral-400 mt-2">Achieved within 45 days of visual launch for Aurora Residences using photorealistic CGI.</p>
-              </div>
+        {/* Looping Video Gallery Row */}
+        {filteredVideos.length > 0 && (
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5">
+            {filteredVideos.map((videoItem) => (
+              <div
+                key={videoItem.id}
+                onClick={() => onSelectProject(videoItem)}
+                className="group cursor-pointer rounded-lg overflow-hidden bg-[#0e1116] border border-white/10 hover:border-[#c5a059]/70 transition-all duration-300 flex flex-col hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#c5a059]/10"
+              >
+                <div className="relative aspect-video w-full overflow-hidden bg-black">
+                  {videoItem.video && (
+                    <LoopVideo
+                      src={videoItem.video}
+                      poster={videoItem.image}
+                      className={`w-full h-full ${
+                        videoItem.id === 'video-event-reel' ? 'object-contain' : 'object-cover'
+                      } group-hover:scale-105 transition-transform duration-500 ease-out`}
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0e1116]/80 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+                    <Play className="w-3.5 h-3.5 text-[#dfbe70] fill-[#dfbe70]" />
+                  </div>
+                </div>
 
-              <div className="p-6 rounded-lg bg-[#0e1116] border border-white/10">
-                <p className="text-3xl font-extrabold text-[#dfbe70] font-mono">1,400+</p>
-                <p className="text-xs uppercase tracking-wider text-neutral-300 font-bold mt-1">Qualified Expo Leads</p>
-                <p className="text-xs text-neutral-400 mt-2">Generated at SAIMO&apos;s award-winning biometric exhibition pavilion.</p>
+                <div className="p-4 flex items-center justify-between gap-2">
+                  <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-[#dfbe70] transition-colors leading-snug">
+                    {videoItem.title}
+                  </h3>
+                </div>
               </div>
-
-              <div className="p-6 rounded-lg bg-[#0e1116] border border-white/10">
-                <p className="text-3xl font-extrabold text-[#dfbe70] font-mono">25,000+</p>
-                <p className="text-xs uppercase tracking-wider text-neutral-300 font-bold mt-1">Interactive Visitors</p>
-                <p className="text-xs text-neutral-400 mt-2">Drawn into the Synapse 360-degree interactive digital sensory installation.</p>
-              </div>
-            </div>
+            ))}
           </div>
         )}
 

@@ -41,12 +41,12 @@ export const StoryModal: React.FC<StoryModalProps> = ({ isOpen, onClose, onOpenC
           <div className="flex flex-col sm:flex-row items-center gap-6 p-4 rounded-lg bg-[#141822] border border-white/5">
             <img
               src={IMAGES.debakPortrait}
-              alt="Debaks Su"
+              alt="DEBAKS"
               className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-[#dfbe70]"
             />
             <div className="text-center sm:text-left space-y-1">
               <h2 className="text-xl sm:text-2xl font-bold text-white">
-                Debaks Su
+                DEBAKS
               </h2>
               <p className="text-xs font-semibold tracking-widest text-[#dfbe70] uppercase">
                 {CONTACT_INFO.title}
