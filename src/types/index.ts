@@ -20,6 +20,7 @@ export interface ProjectItem {
   title: string;
   category: string;
   image: string;
+  gallery?: string[];
   video?: string;
   client: string;
   year: string;
@@ -47,6 +48,8 @@ export interface WorkShowcaseItem {
   client: string;
   year: string;
   image: string;
+  video?: string;
+  isVerticalVideo?: boolean;
   headline: string;
   summary: string;
   deliverables: string[];

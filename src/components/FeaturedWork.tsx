@@ -1,88 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowUpRight, Play } from 'lucide-react';
-import { PROJECTS, FEATURED_VIDEOS } from '../data/content.ts';
+import React, { useState } from 'react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { PROJECTS } from '../data/content.ts';
 import { ProjectItem } from '../types/index.ts';
 
 interface FeaturedWorkProps {
   onSelectProject: (project: ProjectItem) => void;
   isStandalonePage?: boolean;
 }
-
-interface LoopVideoProps {
-  src: string;
-  poster?: string;
-  className?: string;
-}
-
-const LoopVideo: React.FC<LoopVideoProps> = ({ src, poster, className }) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  useEffect(() => {
-    const el = videoRef.current;
-    if (!el) return;
-
-    el.defaultMuted = true;
-    el.muted = true;
-    el.setAttribute('muted', '');
-    el.setAttribute('playsinline', '');
-    el.setAttribute('webkit-playsinline', '');
-
-    const attemptPlay = () => {
-      if (!el.muted) el.muted = true;
-      const playPromise = el.play();
-      if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => {
-          // Retry once more when media is buffered
-        });
-      }
-    };
-
-    attemptPlay();
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            attemptPlay();
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(el);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [src]);
-
-  return (
-    <video
-      ref={videoRef}
-      src={src}
-      poster={poster}
-      autoPlay
-      loop
-      muted
-      playsInline
-      preload="auto"
-      onLoadedData={(e) => {
-        const el = e.currentTarget;
-        el.muted = true;
-        el.play().catch(() => {});
-      }}
-      onCanPlay={(e) => {
-        const el = e.currentTarget;
-        el.muted = true;
-        if (el.paused) {
-          el.play().catch(() => {});
-        }
-      }}
-      className={className}
-    />
-  );
-};
 
 export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ onSelectProject, isStandalonePage = false }) => {
   const [filter, setFilter] = useState<string>('all');
@@ -103,7 +27,6 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ onSelectProject, isS
   };
 
   const filteredProjects = PROJECTS.filter(matchesFilter);
-  const filteredVideos = FEATURED_VIDEOS.filter(matchesFilter);
 
   return (
     <section 
@@ -128,7 +51,12 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ onSelectProject, isS
 
           <div className="shrink-0 flex items-center gap-3">
             <button
-              onClick={() => onSelectProject(PROJECTS[0])}
+              onClick={() =>
+                onSelectProject({
+                  ...PROJECTS[0],
+                  id: 'all-projects-gallery',
+                })
+              }
               className="group inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold tracking-wider text-neutral-200 hover:text-white border border-neutral-800 hover:border-[#c5a059] rounded-md transition-all duration-200 bg-[#0d0f12] hover:bg-[#12161d] cursor-pointer"
             >
               <span>VIEW ALL PROJECTS</span>
@@ -188,41 +116,6 @@ export const FeaturedWork: React.FC<FeaturedWorkProps> = ({ onSelectProject, isS
             </div>
           ))}
         </div>
-
-        {/* Looping Video Gallery Row */}
-        {filteredVideos.length > 0 && (
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5">
-            {filteredVideos.map((videoItem) => (
-              <div
-                key={videoItem.id}
-                onClick={() => onSelectProject(videoItem)}
-                className="group cursor-pointer rounded-lg overflow-hidden bg-[#0e1116] border border-white/10 hover:border-[#c5a059]/70 transition-all duration-300 flex flex-col hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#c5a059]/10"
-              >
-                <div className="relative aspect-video w-full overflow-hidden bg-black">
-                  {videoItem.video && (
-                    <LoopVideo
-                      src={videoItem.video}
-                      poster={videoItem.image}
-                      className={`w-full h-full ${
-                        videoItem.id === 'video-event-reel' ? 'object-contain' : 'object-cover'
-                      } group-hover:scale-105 transition-transform duration-500 ease-out`}
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0e1116]/80 via-transparent to-transparent pointer-events-none" />
-                  <div className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
-                    <Play className="w-3.5 h-3.5 text-[#dfbe70] fill-[#dfbe70]" />
-                  </div>
-                </div>
-
-                <div className="p-4 flex items-center justify-between gap-2">
-                  <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-[#dfbe70] transition-colors leading-snug">
-                    {videoItem.title}
-                  </h3>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
 
       </div>
     </section>

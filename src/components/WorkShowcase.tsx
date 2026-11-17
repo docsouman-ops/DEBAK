@@ -1,10 +1,84 @@
-import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, CheckCircle2, Layers } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ArrowLeft, ArrowRight, CheckCircle2, Layers, Play } from 'lucide-react';
 import { WORK_SHOWCASE } from '../data/content.ts';
 
 interface WorkShowcaseProps {
   onOpenContact: () => void;
 }
+
+interface LoopVideoProps {
+  src: string;
+  poster?: string;
+  className?: string;
+}
+
+const LoopVideo: React.FC<LoopVideoProps> = ({ src, poster, className }) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+
+    el.defaultMuted = true;
+    el.muted = true;
+    el.setAttribute('muted', '');
+    el.setAttribute('playsinline', '');
+    el.setAttribute('webkit-playsinline', '');
+
+    const attemptPlay = () => {
+      if (!el.muted) el.muted = true;
+      const playPromise = el.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+      }
+    };
+
+    attemptPlay();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            attemptPlay();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [src]);
+
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      poster={poster}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="auto"
+      onLoadedData={(e) => {
+        const el = e.currentTarget;
+        el.muted = true;
+        el.play().catch(() => {});
+      }}
+      onCanPlay={(e) => {
+        const el = e.currentTarget;
+        el.muted = true;
+        if (el.paused) {
+          el.play().catch(() => {});
+        }
+      }}
+      className={className}
+    />
+  );
+};
 
 export const WorkShowcase: React.FC<WorkShowcaseProps> = ({ onOpenContact }) => {
   const [activeFilter, setActiveFilter] = useState<'all' | '3d' | 'spatial' | 'brand'>('all');
@@ -77,25 +151,36 @@ export const WorkShowcase: React.FC<WorkShowcaseProps> = ({ onOpenContact }) => 
         {/* Main Spotlight Stage (Asymmetric 12-col split) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch rounded-xl bg-[#0e1116] border border-white/10 overflow-hidden shadow-2xl">
           {/* Left Widescreen Media Frame */}
-          <div className="lg:col-span-7 relative min-h-[280px] sm:min-h-[380px] lg:min-h-[440px] bg-[#0a0c10] overflow-hidden group">
-            <img
-              src={activeItem.image}
-              alt={activeItem.title}
-              referrerPolicy="no-referrer"
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#08090a] via-[#08090a]/20 to-transparent opacity-80" />
+          <div className="lg:col-span-7 relative h-[300px] sm:h-[400px] lg:h-[460px] bg-[#0a0c10] overflow-hidden group">
+            {activeItem.video ? (
+              <LoopVideo
+                key={activeItem.video}
+                src={activeItem.video}
+                poster={activeItem.image || undefined}
+                className={`w-full h-full ${
+                  activeItem.isVerticalVideo ? 'object-contain bg-black' : 'object-cover'
+                } transition-transform duration-500 ease-out`}
+              />
+            ) : (
+              <img
+                src={activeItem.image}
+                alt={activeItem.title}
+                referrerPolicy="no-referrer"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#08090a] via-[#08090a]/20 to-transparent opacity-80 pointer-events-none" />
 
-            {/* Fallback icon container behind image if load fails */}
+            {/* Fallback icon container behind media if load fails */}
             <div className="absolute inset-0 -z-10 flex flex-col items-center justify-center bg-[#0d1016] text-neutral-500 gap-2">
               <Layers className="w-8 h-8 text-[#c5a059]/60" />
               <span className="text-xs">{activeItem.title}</span>
             </div>
 
             {/* Bottom Caption Overlay */}
-            <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
+            <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4 z-10">
               <div>
                 <div className="flex items-center gap-2 text-xs text-neutral-300 mb-1">
                   <span className="font-mono tabular-nums text-[#dfbe70] font-semibold">
@@ -199,15 +284,40 @@ export const WorkShowcase: React.FC<WorkShowcaseProps> = ({ onOpenContact }) => 
                     : 'bg-[#0e1116] border-white/10 hover:border-white/25'
                 }`}
               >
-                <div className="w-14 h-11 rounded overflow-hidden bg-black shrink-0">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    referrerPolicy="no-referrer"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover"
-                  />
+                <div className="relative w-14 h-11 rounded overflow-hidden bg-black shrink-0">
+                  {item.video ? (
+                    <>
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <video
+                          src={item.video}
+                          muted
+                          playsInline
+                          preload="metadata"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      <span className="absolute inset-0 flex items-center justify-center bg-black/35">
+                        <Play className="w-3.5 h-3.5 text-[#dfbe70] fill-[#dfbe70]" />
+                      </span>
+                    </>
+                  ) : (
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </div>
                 <div className="min-w-0">
                   <p className="text-[11px] font-mono tabular-nums text-[#dfbe70] font-semibold">
