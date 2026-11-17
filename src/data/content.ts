@@ -438,7 +438,7 @@ export const WORK_SHOWCASE: WorkShowcaseItem[] = [
   {
     id: 'showcase-motion-edit',
     index: '03',
-    title: 'Commercial Motion & Video Edit',
+    title: 'Motion & Video Edit',
     discipline: 'Motion Graphics / Video Editing',
     filterKey: 'brand',
     client: 'Flipkart Play',
